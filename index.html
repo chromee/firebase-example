@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="utf-8">
+  <title>Firebase Example</title>
+</head>
+
+<body>
+
+  Chat app
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/5.3.1/firebase.js"></script>
+  <script>
+    const config = {
+      apiKey: "AIzaSyCGoLY3FVxTlv2mIKC6Nz2IlIgGe1N84xY",
+      authDomain: "first-example-17525.firebaseapp.com",
+      databaseURL: "https://first-example-17525.firebaseio.com",
+      projectId: "first-example-17525",
+      storageBucket: "first-example-17525.appspot.com",
+      messagingSenderId: "282270409072"
+    };
+    firebase.initializeApp(config);
+  </script>
+
+  <div id='messagesDiv'></div>
+  <input type='text' id='nameInput' placeholder='Name'>
+  <input type='text' id='messageInput' placeholder='Message...'>
+  <script type='text/javascript'>
+    var messagesRef = firebase.database().ref('/');
+
+    $('#messageInput').keypress(function (e) {
+      if (e.keyCode == 13) {
+        var name = $('#nameInput').val();
+        var text = $('#messageInput').val();
+        messagesRef.push({
+          name: name,
+          text: text
+        });
+        $('#messageInput').val('');
+      }
+    });
+
+    messagesRef.on('child_added', function (snapshot) {
+      var message = snapshot.val();
+      console.log(message.name);
+      if (message.name) {
+        $('<div/>').text(message.text).prepend($('<em/>').text(message.name + ': ')).appendTo($('#messagesDiv'));
+        $('#messagesDiv')[0].scrollTop = $('#messagesDiv')[0].scrollHeight;
+      }
+    });
+  </script>
+</body>
+
+</html>
